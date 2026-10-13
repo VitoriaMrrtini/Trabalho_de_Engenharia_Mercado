@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cadastro</title>
+  <link rel="stylesheet" href="/frontend/css/login.css">
+</head>
+<body>
+
+  <main class="pagina">
+    <div class="cartao">
+
+      <header class="topo">
+        <div class="icone" aria-hidden="true">+</div>
+        <h1>Crie sua conta</h1>
+        <p>Preencha os dados para se cadastrar</p>
+      </header>
+
+      <!-- Mensagem de erro/sucesso (controlada pelo JS) -->
+      <div id="alerta" class="alerta oculto" role="alert"></div>
+
+      <form id="formCadastro" novalidate>
+
+        <div class="campo">
+          <label for="nome">Nome completo</label>
+          <input type="text" id="nome" placeholder="Seu nome" autocomplete="name">
+          <small class="erro" id="erro-nome"></small>
+        </div>
+
+        <div class="campo">
+          <label for="email">E-mail</label>
+          <input type="email" id="email" placeholder="nome@exemplo.com" autocomplete="email">
+          <small class="erro" id="erro-email"></small>
+        </div>
+
+        <div class="campo">
+          <label for="senha">Senha</label>
+          <div class="campo-senha">
+            <input type="password" id="senha" placeholder="Mínimo 6 caracteres" autocomplete="new-password">
+            <button type="button" id="btnMostrarSenha" class="btn-mostrar">Mostrar</button>
+          </div>
+          <small class="erro" id="erro-senha"></small>
+        </div>
+
+        <div class="campo">
+          <label for="confirmarSenha">Confirmar senha</label>
+          <input type="password" id="confirmarSenha" placeholder="Repita a senha" autocomplete="new-password">
+          <small class="erro" id="erro-confirmar"></small>
+        </div>
+
+        <div class="campo campo-check">
+          <label class="check">
+            <input type="checkbox" id="termos">
+            <span>Li e aceito os <a href="#">termos de uso</a></span>
+          </label>
+          <small class="erro" id="erro-termos"></small>
+        </div>
+
+        <button type="submit" class="btn-principal">Cadastrar</button>
+      </form>
+
+      <p class="rodape">Já tem uma conta? <a href="/frontend/login.html">Entrar</a></p>
+
+    </div>
+  </main>
+
+  <script src="/frontend/js/login.js"></script>
+</body>
+</html>
