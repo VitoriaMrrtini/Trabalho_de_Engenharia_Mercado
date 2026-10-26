@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login</title>
+  <link rel="stylesheet" href="/frontend/css/login.css">
+</head>
+<body>
+
+  <main class="pagina">
+    <div class="cartao">
+
+      <header class="topo">
+        <div class="icone" aria-hidden="true">+</div>
+        <h1>Bem-vindo de volta!</h1>
+        <p>Entre com seus dados para acessar sua conta</p>
+      </header>
+
+      <!-- Mensagem de erro/sucesso -->
+      <div id="alerta" class="alerta oculto" role="alert"></div>
+
+      <form id="formLogin" novalidate>
+
+        <div class="campo">
+          <label for="email">E-mail</label>
+          <input
+            type="email"
+            id="email"
+            placeholder="nome@exemplo.com"
+            autocomplete="email"
+            required
+          >
+          <small class="erro" id="erro-email"></small>
+        </div>
+
+        <div class="campo">
+          <label for="senha">Senha</label>
+
+          <div class="campo-senha">
+            <input
+              type="password"
+              id="senha"
+              placeholder="Digite sua senha"
+              autocomplete="current-password"
+              required
+            >
+            <button
+              type="button"
+              id="btnMostrarSenha"
+              class="btn-mostrar"
+            >
+              Mostrar
+            </button>
+          </div>
+
+          <small class="erro" id="erro-senha"></small>
+        </div>
+
+        <div class="campo-opcoes">
+          <label class="check">
+            <input type="checkbox" id="lembrar">
+            <span>Lembrar de mim</span>
+          </label>
+
+          <a href="/frontend/recuperar-senha.html">
+            Esqueci minha senha
+          </a>
+        </div>
+
+        <button type="submit" class="btn-principal">
+          Entrar
+        </button>
+
+      </form>
+
+      <p class="rodape">
+        Ainda não tem uma conta?
+        <a href="/frontend/cadastro.html">Cadastre-se</a>
+      </p>
+
+    </div>
+  </main>
+
+  <script src="/frontend/js/login.js"></script>
+</body>
+</html>

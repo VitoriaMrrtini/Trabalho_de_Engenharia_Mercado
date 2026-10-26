@@ -1,0 +1,227 @@
+/* ===== Variáveis (troque a cor principal aqui) ===== */
+:root {
+  --cor-principal: #0d6efd;
+  --cor-principal-escura: #0b5ed7;
+  --cor-erro: #dc3545;
+  --cor-sucesso: #198754;
+  --cor-texto: #212529;
+  --cor-texto-suave: #6c757d;
+  --cor-borda: #ced4da;
+}
+
+/* ===== Reset básico ===== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  color: var(--cor-texto);
+  line-height: 1.5;
+}
+
+a {
+  color: var(--cor-principal);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ===== Página e cartão ===== */
+.pagina {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: linear-gradient(135deg, #e8f0fe 0%, #f8f9fa 100%);
+}
+
+.cartao {
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  padding: 40px 32px;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* ===== Topo ===== */
+.topo {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.icone {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 8px;
+  border-radius: 50%;
+  background: var(--cor-principal);
+  color: #fff;
+  font-size: 2rem;
+  line-height: 56px;
+}
+
+.topo h1 {
+  font-size: 1.6rem;
+  margin-bottom: 4px;
+}
+
+.topo p {
+  color: var(--cor-texto-suave);
+}
+
+/* ===== Alerta ===== */
+.alerta {
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.alerta.sucesso {
+  background: #d1e7dd;
+  color: #0f5132;
+}
+
+.alerta.perigo {
+  background: #f8d7da;
+  color: #842029;
+}
+
+.oculto {
+  display: none;
+}
+
+/* ===== Campos ===== */
+.campo {
+  margin-bottom: 16px;
+}
+
+.campo label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.campo input[type="text"],
+.campo input[type="email"],
+.campo input[type="password"] {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 1rem;
+  border: 1px solid var(--cor-borda);
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.campo input:focus {
+  border-color: var(--cor-principal);
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.2);
+}
+
+/* Campo com erro / campo válido */
+.campo.invalido input[type="text"],
+.campo.invalido input[type="email"],
+.campo.invalido input[type="password"] {
+  border-color: var(--cor-erro);
+}
+
+.campo.valido input[type="text"],
+.campo.valido input[type="email"],
+.campo.valido input[type="password"] {
+  border-color: var(--cor-sucesso);
+}
+
+.erro {
+  display: none;
+  margin-top: 4px;
+  font-size: 0.85rem;
+  color: var(--cor-erro);
+}
+
+.campo.invalido .erro {
+  display: block;
+}
+
+/* ===== Senha com botão "Mostrar" ===== */
+.campo-senha {
+  position: relative;
+}
+
+.campo-senha input {
+  padding-right: 80px;
+}
+
+.btn-mostrar {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  padding: 4px 8px;
+  font-size: 0.85rem;
+  color: var(--cor-principal);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-mostrar:hover {
+  text-decoration: underline;
+}
+
+/* ===== Checkbox ===== */
+.check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.check input {
+  width: 16px;
+  height: 16px;
+}
+
+/* ===== Botão principal ===== */
+.btn-principal {
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #fff;
+  background: var(--cor-principal);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-principal:hover {
+  background: var(--cor-principal-escura);
+}
+
+/* ===== Rodapé do cartão ===== */
+.rodape {
+  margin-top: 24px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--cor-texto-suave);
+}
+
+/* ===== Telas pequenas ===== */
+@media (max-width: 480px) {
+  .cartao {
+    padding: 32px 20px;
+  }
+}
