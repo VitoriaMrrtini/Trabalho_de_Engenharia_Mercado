@@ -1,5 +1,5 @@
-create database Mercado character set utf8mb4;
-CREATE DATABASE IF NOT EXISTS
+CREATE DATABASE IF NOT EXISTS Mercado character set utf8mb4;
+
 
 create table PRODUTO(
 	ID_produto int auto_increment primary key,
