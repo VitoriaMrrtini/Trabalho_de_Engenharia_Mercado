@@ -1,48 +1,64 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>Mercado Lobato</title>
-    <link rel="stylesheet" href = "./css/pagina_inicial.css">
-</head>
+    <link rel="stylesheet" href="./css/pagina_inicial.css" />
+  </head>
 
-<body>
+  <body>
     <header>
-        <div class = "navbar">
+      <div class="navbar">
         <div class="header-inner-content">
-            <h1 class = "logo">MERCADO LOBATO</h1>
-                <nav>
-                    <ul>
-                        <li>Promoções</li>
-                        <li>Higiene</li>
-                        <li>Laticinios</li>
-                        <li>Papelaria</li>
-                        <li>Cereais</li>
-                        <li>Congelados</li>
-                        <li>Bebidas</li>
-                    </ul>
-                </nav>
-                <div class = "nav-icon-conteiner">
-                    <img src="./imagens/cart-shopping-solid-full.svg">
-                    <img src="./imagens/bars-solid-full.svg" class="menu-button">
-            </div>
+          <h1 class="logo"><img src="img/Logo Supermercado Lobato – Preço Baixo.png" alt=""></h1>
+          <nav>
+            <ul>
+              <li>Higiene</li>
+              <li>Laticinios</li>
+              <li>Papelaria</li>
+              <li>Cereais</li>
+              <li>Congelados</li>
+              <li>Bebidas</li>
+            </ul>
+          </nav>
+          <div class="nav-icon-conteiner">
+            <img src="img/cart-shopping-solid-full.svg" />
+            <img src="img/bars-solid-full.svg" class="menu-button" />
+          </div>
         </div>
-    </div>   
+      </div>
     </header>
-    
-    <div class = "produtos">
-        <h1 class = "nomeProd">Produtos</h1>
-        <div class="card">
-            <div class = 'imagem'>
-                <img src="img/produtos/Caixa Italac com pudim caramelizado.png" alt="leite_condensado">
-            </div>
 
-            <h3> Leite Condesado Italac</h3>
-            <p class = "descricao">Leite Condensado Semidesnatado 395g</p>
-            <p class = "preco"> R$ 7,50</p>
+    <form class="busca" id="formBusca" role="search" autocomplete="off">
+      <div>
+        <label for="campoTexto">O que você procura?</label>
+        <input
+          type="search"
+          id="campoTexto"
+          placeholder="Ex.: arroz, feijão, leite..."
+        />
+      </div>
+  
+    </form>
+
+    <div class="produtos">
+      <h1 class="nomeProd">Produtos</h1>
+      <div class="card">
+        <div class="imagem">
+          <img
+            src="img/produtos/Caixa Italac com pudim caramelizado.png"
+            alt="leite_condensado"
+          />
         </div>
+
+        <h3>Leite Condesado Italac</h3>
+        <p class="descricao">Leite Condensado Semidesnatado 395g</p>
+        <p class="preco">R$ 7,50</p>
+
+        
+
     </div>
-</body>
+  </body>
 </html>
