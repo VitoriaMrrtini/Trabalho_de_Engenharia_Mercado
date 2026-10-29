@@ -1,74 +1,170 @@
-*{
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
-body{
-    font-family: 'arial';
+body {
+  font-family: "arial";
 }
 
-.navbar{
-    background-color: #F07830;
-    padding: 1rem;
-    position: sticky;
-    top: 0;
-    box-shadow: 10px 0px 10x #F07830 ; 
-    z-index: 99;  
-
+.navbar {
+  background-color: #f07830;
+  padding: 1rem;
+  position: sticky;
+  top: 0;
+  box-shadow: 10px 0px 10x #f07830;
+  z-index: 99;
 }
 
-.header-inner-content{
-    max-width: 1300px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.navbar>div{
+.header-inner-content {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    min-height: 0;
+}
+.header-inner-content li{
+  font-size: 25px
 }
 
-.logo{
-    font-size: 36px;
-    color:#0A1C72;
-    -webkit-text-stroke-width: 2px;
-    -webkit-text-stroke-color:#F09939;
+.navbar > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-nav ul{
-    display: flex;
-    list-style: none;
-    align-items: center;
+.logo {
+  font-size: 100px;
+  color: #0a1c72;
+  -webkit-text-stroke-width: 2px;
+  -webkit-text-stroke-color: #f09939;
+  font-family: "Bowlby One SC", sans-serif;
+  font-size: 60px;
+ 
+}
+.logo img {
+    width: 300px;
+    height: auto;
+    max-width: 100%;
+    display: block;
 }
 
-.nav-icon-conteiner{
-    display: flex;
-    align-items: center;
+@font-face {
+  font-family: "Bowlby One SC";
+  src: url("../fonts/Bowlby_One_SC/BowlbyOneSC-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
 }
 
-.nav-icon-conteiner img{
-    width: 30px;
-    cursor: pointer;
+nav ul {
+  display: flex;
+  list-style: none;
+  align-items: center;
 }
 
-.nav-icon-conteiner img:first-child{
-    margin-right: 1rem;
+.nav-icon-conteiner {
+  display: flex;
+  align-items: center;
 }
 
-nav ul li{
-    color: #f3b776;
-    margin-right: 1.5rem;
-    cursor: pointer;
+.nav-icon-conteiner img {
+  width: 30px;
+  cursor: pointer;
 }
 
-nav ul li:hover{
-    transform: translateY(-5px);
-    transition: all 0.2s;
-    font-weight: bolder;
+.nav-icon-conteiner img:first-child {
+  margin-right: 1rem;
 }
 
-.menu-button{
-    display: none;
+nav ul li {
+  color: #f3b776;
+  margin-right: 1.5rem;
+  cursor: pointer;
 }
+
+nav ul li:hover {
+  transform: translateY(-5px);
+  transition: all 0.2s;
+  font-weight: bolder;
+}
+
+.menu-button {
+  display: none;
+}
+
+.produtos {
+  display: grid;
+  flex-direction: column;
+  grid-template-columns: repeat(auto-fill, 280px);
+  gap: 20px;
+  padding: 20px;
+}
+
+.card {
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  padding: 12px;
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.imagem {
+  height: 220px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.imagem img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.card h3 {
+  font-size: 30px;
+  align-items: baseline;
+}
+
+.descricao {
+  color: #585553;
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.preco {
+  color: rgb(221, 90, 42);
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.busca {
+  display: grid;
+  gap: 10px;
+  max-width: 1000px;
+  margin: 24px auto;
+  background: #fff;
+  border: 1px solid #dde2ea;
+  border-radius: 12px;
+  padding: 14px;
+  
+}
+.busca label {
+  display: block;
+  font-size: 15px;
+  color: #6b7686;
+  margin-bottom: 4px;
+}
+.busca input,
+.busca select {
+  width: 100%;
+  height: 42px;
+  padding: 0 12px;
+  font-size: 15px;
+  background: #fff;
+  border: 1px solid #dde2ea;
+  border-radius: 8px;
+}
+
+
