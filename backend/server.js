@@ -7,6 +7,15 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.get('/teste-conexao', async (req, res) => {
+  try {
+    const [resultado] = await pool.query('SELECT DATABASE() AS banco');
+    res.json(resultado[0]);
+  } catch (erro) {
+    res.status(500).json({ error: erro.message });
+  }
+});
+
 app.get('/produtos', async (req, res) => {
   try {
     const [produtos] = await pool.query(`
