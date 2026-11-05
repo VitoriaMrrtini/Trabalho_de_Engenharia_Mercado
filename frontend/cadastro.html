@@ -24,20 +24,20 @@
 
         <div class="campo">
           <label for="nome">Nome completo</label>
-          <input type="text" id="nome" placeholder="Seu nome" autocomplete="name">
+          <input type="text" id="nome" placeholder="Seu nome" autocomplete="name" required>
           <small class="erro" id="erro-nome"></small>
         </div>
 
         <div class="campo">
           <label for="email">E-mail</label>
-          <input type="email" id="email" placeholder="nome@exemplo.com" autocomplete="email">
+          <input type="email" id="email" placeholder="nome@exemplo.com" autocomplete="email" required>
           <small class="erro" id="erro-email"></small>
         </div>
 
         <div class="campo">
           <label for="senha">Senha</label>
           <div class="campo-senha">
-            <input type="password" id="senha" placeholder="Mínimo 6 caracteres" autocomplete="new-password">
+            <input type="password" id="senha" placeholder="Mínimo 8 caracteres" autocomplete="new-password" required>
             <button type="button" id="btnMostrarSenha" class="btn-mostrar">Mostrar</button>
           </div>
           <small class="erro" id="erro-senha"></small>
@@ -45,13 +45,13 @@
 
         <div class="campo">
           <label for="confirmarSenha">Confirmar senha</label>
-          <input type="password" id="confirmarSenha" placeholder="Repita a senha" autocomplete="new-password">
+          <input type="password" id="confirmarSenha" placeholder="Repita a senha" autocomplete="new-password" required>
           <small class="erro" id="erro-confirmar"></small>
         </div>
 
         <div class="campo campo-check">
           <label class="check">
-            <input type="checkbox" id="termos">
+            <input type="checkbox" id="termos" required>
             <span>Li e aceito os <a href="#">termos de uso</a></span>
           </label>
           <small class="erro" id="erro-termos"></small>
@@ -65,6 +65,6 @@
     </div>
   </main>
 
-  <script src="/frontend/js/login.js"></script>
+  <script src="/frontend/js/cadastro.js"></script>
 </body>
 </html>
