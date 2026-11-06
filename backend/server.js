@@ -20,10 +20,10 @@ app.get('/teste-conexao', async (req, res) => {
 app.get('/produtos', async (req, res) => {
   try {
     const [produtos] = await pool.query(`
-      SELECT p.ID_produto, p.nome, p.preco, p.estoque, p.data_validade,
+      SELECT p.id_produto, p.nome, p.preco, p.estoque, p.data_validade,
              c.nome AS categoria
       FROM PRODUTO p
-      LEFT JOIN CATEGORIA_PRODUTO c ON c.ID_categoria = p.ID_categoria
+      LEFT JOIN CATEGORIA_PRODUTO c ON c.id_categoria = p.id_categoria
     `);
     res.json(produtos);
   } catch (erro) {
@@ -72,7 +72,7 @@ app.post('/cadastro', async (req, res) => {
 
     // Cadastrar cliente
     const [resultado] = await conexao.execute(
-      'INSERT INTO CLIENTE (nome, Email) VALUES (?, ?)',
+      'INSERT INTO CLIENTE (nome, email) VALUES (?, ?)',
       [nome.trim(), email.trim()]
     );
 
@@ -80,7 +80,7 @@ app.post('/cadastro', async (req, res) => {
 
     // Cadastrar senha vinculada ao cliente
     await conexao.execute(
-      'INSERT INTO SENHA (ID_cliente, senha) VALUES (?, ?)',
+      'INSERT INTO USUARIO (id_cliente, senha) VALUES (?, ?)',
       [idCliente, senhaHash]
     );
 
