@@ -70,6 +70,7 @@ nav ul {
 .nav-icon-conteiner img {
   width: 30px;
   cursor: pointer;
+  
 }
 
 .nav-icon-conteiner img:first-child {
@@ -94,8 +95,7 @@ nav ul li:hover {
 
 .produtos {
   display: grid;
-  flex-direction: column;
-  grid-template-columns: repeat(auto-fill, 280px);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 20px;
   padding: 20px;
 }
@@ -167,4 +167,25 @@ nav ul li:hover {
   border-radius: 8px;
 }
 
+.nav-icon-conteiner a {
+  position: relative;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
 
+#contadorCarrinho {
+  position: absolute;
+  top: -9px;
+  right: -10px;
+  background: var(--azul);
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+  min-width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
