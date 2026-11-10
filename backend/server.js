@@ -60,7 +60,6 @@ app.post('/cadastro', async (req, res) => {
     });
   }
 
-
   let conexao;
 
   try {
