@@ -34,7 +34,7 @@ function definirErro(input, idErro, mensagem) {
   return true;
 }
 
-// ----- Validações de cada campo (todos obrigatórios) -----
+// Validações de cada campo (todos obrigatórios)
 function validarNome() {
   const nome = nomeInput.value.trim();
   if (nome === "") {
@@ -188,22 +188,18 @@ function mostrarAlerta(mensagem, tipo) {
 }
 
 // Envio do formulário
-form.addEventListener("submit", (event) => {
+form.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  // Roda todas as validações (sem parar na primeira que falhar)
-  const nomeValido = validarNome();
-  const emailValido = validarEmail();
-  const senhaValida = validarSenha();
-  const confirmacaoValida = validarConfirmacao();
-  const termosValidos = validarTermos();
-
-  if (
-    !nomeValido ||
-    !emailValido ||
-    !senhaValida ||
-    !confirmacaoValida ||
-    !termosValidos
+  const resultados = [
+    // Roda todas as validações (sem parar na primeira que falhar)
+    validarNome(),
+    validarEmail(),
+    validarSenha(),
+    validarConfirmacao(),
+    validarTermos(),
+  ];
+  if (resultados.includes(false)
   ) {
     mostrarAlerta("Corrija os campos destacados.", "perigo");
 
@@ -213,15 +209,49 @@ form.addEventListener("submit", (event) => {
     return;
   }
 
-  // ATENÇÃO: isto é só uma simulação para o trabalho.
-  // Em um sistema real, os dados são enviados ao servidor, que salva
-  // a conta e guarda a senha de forma criptografada (hash).
-  mostrarAlerta(
-    "Cadastro realizado com sucesso! Redirecionando para o login...",
-    "sucesso",
-  );
+  try {
+    console.log("Enviando cadastro...");
 
-  setTimeout(() => {
-    window.location.href = "/frontend/login.html";
-  }, 2000);
-});
+    const resposta = await fetch('http://localhost:3000/cadastro', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        nome: nomeInput.value.trim(),
+        email: emailInput.value.trim(),
+        senha: senhaInput.value
+      })
+    });
+
+    const dados = await resposta.json();
+
+    console.log("Resposta do servidor:", dados);
+
+    if (!resposta.ok) {
+      mostrarAlerta(
+        dados.error || 'Erro ao realizar cadastro.',
+        'perigo'
+      );
+      return;
+    }
+
+    mostrarAlerta(
+      'Cadastro realizado com sucesso! Redirecionando para o login...',
+      'sucesso'
+    );
+
+    setTimeout(() => {
+      window.location.href = 'login.html';
+    }, 2000);
+
+  } catch (erro) {
+    console.error("Erro na requisição:", erro);
+
+    mostrarAlerta(
+      'Não foi possível conectar ao servidor. Tente novamente.',
+      'perigo'
+    );
+  }
+}
+)
