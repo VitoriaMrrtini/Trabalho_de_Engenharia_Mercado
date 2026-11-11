@@ -1,3 +1,16 @@
-.env
-*.pem
+# Dependências
 node_modules/
+**/node_modules/
+
+# Variáveis de ambiente
+.env
+.env.*
+**/.env
+**/.env.*
+
+# Certificados
+*.pem
+*.cam
+
+# Arquivos do macOS
+.DS_Store
