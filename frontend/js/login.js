@@ -1,11 +1,11 @@
-// ===== Elementos do formulário =====
+// Elementos do formulário
 const form = document.getElementById('formLogin');
 const emailInput = document.getElementById('email');
 const senhaInput = document.getElementById('senha');
 const btnMostrarSenha = document.getElementById('btnMostrarSenha');
 const alerta = document.getElementById('alerta');
 
-// ===== Mostrar / ocultar senha =====
+// Mostrar / ocultar senha
 btnMostrarSenha.addEventListener('click', () => {
   const visivel = senhaInput.type === 'text';
 
@@ -13,7 +13,7 @@ btnMostrarSenha.addEventListener('click', () => {
   btnMostrarSenha.textContent = visivel ? 'Mostrar' : 'Ocultar';
 });
 
-// ===== Validação dos campos =====
+// Validação dos campos
 function definirErro(input, idErro, mensagem) {
   const campo = input.closest('.campo');
   const textoErro = document.getElementById(idErro);
@@ -32,7 +32,7 @@ function definirErro(input, idErro, mensagem) {
   return true;
 }
 
-// ===== Validar e-mail =====
+// Validar e-mail
 function validarEmail() {
   const email = emailInput.value.trim();
 
@@ -50,7 +50,7 @@ function validarEmail() {
   return definirErro(emailInput, 'erro-email', '');
 }
 
-// ===== Validar senha =====
+// Validar senha
 function validarSenha() {
   if (senhaInput.value.trim() === '') {
     return definirErro(
@@ -63,7 +63,7 @@ function validarSenha() {
   return definirErro(senhaInput, 'erro-senha', '');
 }
 
-// ===== Validação em tempo real =====
+// Validação em tempo real
 emailInput.addEventListener('blur', validarEmail);
 senhaInput.addEventListener('blur', validarSenha);
 
@@ -79,36 +79,78 @@ senhaInput.addEventListener('blur', validarSenha);
   });
 });
 
-// ===== Exibir mensagem de alerta =====
+// Exibir mensagem de alerta
 function mostrarAlerta(mensagem, tipo) {
   alerta.textContent = mensagem;
   alerta.className = `alerta ${tipo}`;
 }
 
-// ===== Envio do formulário =====
-form.addEventListener('submit', (event) => {
+// Envio do formulário
+form.addEventListener('submit', async (event) => {
   event.preventDefault();
 
-  // Executa todas as validações
   const resultados = [
     validarEmail(),
     validarSenha()
   ];
 
   if (resultados.includes(false)) {
-    mostrarAlerta(
-      'Corrija os campos destacados.',
-      'perigo'
-    );
+    mostrarAlerta('Corrija os campos destacados.', 'perigo');
     return;
   }
 
-  // Simulação de login para fins de demonstração.
-  // A autenticação real deve ser feita pelo backend.
-  mostrarAlerta(
-    'Dados válidos! A autenticação precisa ser confirmada pelo servidor.',
-    'sucesso'
-  );
+  const email = emailInput.value.trim();
+  const senha = senhaInput.value;
 
-  // Não redireciona porque ainda não houve autenticação real.
+  const botao = form.querySelector('button[type="submit"]');
+
+  botao.disabled = true;
+  botao.textContent = 'Entrando...';
+
+  try {
+    const resposta = await fetch('http://localhost:3000/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email, senha })
+    });
+
+    const dados = await resposta.json();
+
+    if (!resposta.ok) {
+      mostrarAlerta(
+        dados.error || 'Não foi possível realizar o login.',
+        'perigo'
+      );
+      return;
+    }
+
+    // Guardar informações básicas do usuário e token de autenticação
+    sessionStorage.setItem(
+      'usuario',
+      JSON.stringify(dados.usuario)
+    );
+
+    sessionStorage.setItem('token', dados.token)
+
+    mostrarAlerta('Login realizado com sucesso!', 'sucesso');
+
+    // Redirecionar após autenticação
+    setTimeout(() => {
+      window.location.href = '/frontend/pagina_produto.html';
+    }, 1000);
+
+  } catch (erro) {
+    console.error('Erro ao realizar login:', erro);
+
+    mostrarAlerta(
+      'Não foi possível conectar ao servidor.',
+      'perigo'
+    );
+
+  } finally {
+    botao.disabled = false;
+    botao.textContent = 'Entrar';
+  }
 });
