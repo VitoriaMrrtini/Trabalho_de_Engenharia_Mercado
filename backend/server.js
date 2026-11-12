@@ -8,6 +8,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+
 app.get('/teste-conexao', async (req, res) => {
   try {
     const [resultado] = await pool.query('SELECT DATABASE() AS banco');
@@ -115,7 +116,7 @@ app.post('/cadastro', async (req, res) => {
   }
 });
 
-const PORTA = process.env.PORT || 3000;
-app.listen(PORTA, () => {
-  console.log(`Servidor rodando em http://localhost:${PORTA}`);
-});
+//const PORTA = process.env.PORT || 3000;
+//app.listen(PORTA, () => {
+//  console.log(`Servidor rodando em http://localhost:${PORTA}`);
+//});
