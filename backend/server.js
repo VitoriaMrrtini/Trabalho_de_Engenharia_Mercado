@@ -422,6 +422,82 @@ app.delete('/cliente/perfil', autenticarCliente, async (req, res) => {
   }
 });
 
+
+ // Recuperar senha do cliente
+app.put('/recuperar-senha', async (req, res) => {
+  const { email, novaSenha } = req.body;
+
+  if (
+    typeof email !== 'string' ||
+    typeof novaSenha !== 'string' ||
+    !email.trim() ||
+    !novaSenha
+  ) {
+    return res.status(400).json({
+      error: 'Preencha todos os campos.'
+    });
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+    return res.status(400).json({
+      error: 'Digite um e-mail válido.'
+    });
+  }
+
+  if (novaSenha.length < 8) {
+    return res.status(400).json({
+      error: 'A senha deve ter pelo menos 8 caracteres.'
+    });
+  }
+
+  try {
+    // Localizar cliente pelo e-mail
+    const [clientes] = await pool.execute(
+      `SELECT id_cliente
+       FROM CLIENTE
+       WHERE email = ?`,
+      [email.trim()]
+    );
+
+    if (clientes.length === 0) {
+      return res.status(404).json({
+        error: 'E-mail não encontrado.'
+      });
+    }
+
+    const idCliente = clientes[0].id_cliente;
+
+    // Criptografar nova senha
+    const senhaHash = await bcrypt.hash(novaSenha, 10);
+
+    // Atualizar senha do cliente
+    const [resultado] = await pool.execute(
+      `UPDATE USUARIO
+       SET senha = ?
+       WHERE id_cliente = ?`,
+      [senhaHash, idCliente]
+    );
+
+    if (resultado.affectedRows === 0) {
+      return res.status(404).json({
+        error: 'Usuário não encontrado.'
+      });
+    }
+
+    return res.status(200).json({
+      message: 'Senha alterada com sucesso!'
+    });
+
+  } catch (erro) {
+    console.error('Erro ao recuperar senha:', erro);
+
+    return res.status(500).json({
+      error: 'Erro ao alterar a senha.'
+    });
+  }
+});
+
+
 const PORTA = process.env.PORT || 3000;
 app.listen(PORTA, () => {
   console.log(`Servidor rodando em http://localhost:${PORTA}`);
