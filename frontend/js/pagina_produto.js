@@ -72,7 +72,6 @@ function criarCard(produto) {
   card.append(nome, descricao, preco, status, botao);
   return card;
 }
-
 function filtrarProdutos() {
   const pesquisa = campoBusca.value.toLowerCase().trim();
 
@@ -121,3 +120,4 @@ document.getElementById("formBusca").addEventListener("submit", event => {
 
 atualizarContador();
 carregarProdutos();
+
