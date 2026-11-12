@@ -1,3 +1,4 @@
+const produtosIniciais = require("./produtos");
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -120,3 +121,17 @@ app.post('/cadastro', async (req, res) => {
 //app.listen(PORTA, () => {
 //  console.log(`Servidor rodando em http://localhost:${PORTA}`);
 //});
+
+const PORTA = process.env.PORT || 3000;
+
+async function iniciarServidor() {
+  try {
+    await cadastrarProdutosIniciais();
+
+    app.listen(PORTA, () => {
+      console.log(`servidor rodando em http://localhost:${PORTA}`);
+    });
+  } catch (erro) {
+    console.error("não foi possível iniciar o servidor.");
+  }
+}
