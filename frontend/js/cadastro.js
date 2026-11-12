@@ -34,7 +34,7 @@ function definirErro(input, idErro, mensagem) {
   return true;
 }
 
-// ----- Validações de cada campo (todos obrigatórios) -----
+// Validações de cada campo (todos obrigatórios)
 function validarNome() {
   const nome = nomeInput.value.trim();
   if (nome === "") {

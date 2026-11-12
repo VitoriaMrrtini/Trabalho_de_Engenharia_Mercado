@@ -113,6 +113,62 @@ app.post("/cadastro", async (req, res) => {
   }
 });
 
+// Login de cliente
+app.post('/login', async (req, res) => {
+  const { email, senha } = req.body;
+
+  if (!email || !senha) {
+    return res.status(400).json({
+      error: 'Informe o e-mail e a senha.'
+    });
+  }
+
+  try {
+    const [usuarios] = await pool.execute(
+      `SELECT c.id_cliente, c.nome, c.email, s.senha
+       FROM CLIENTE c
+       INNER JOIN USUARIO s ON c.id_cliente = s.id_cliente
+       WHERE c.email = ?`,
+      [email.trim()]
+    );
+
+    if (usuarios.length === 0) {
+      return res.status(401).json({
+        error: 'E-mail ou senha incorretos.'
+      });
+    }
+
+    const usuario = usuarios[0];
+
+    const senhaValida = await bcrypt.compare(
+      senha,
+      usuario.senha
+    );
+
+    if (!senhaValida) {
+      return res.status(401).json({
+        error: 'E-mail ou senha incorretos.'
+      });
+    }
+
+    return res.status(200).json({
+      message: 'Login realizado com sucesso!',
+      usuario: {
+        id: usuario.id_cliente,
+        nome: usuario.nome,
+        email: usuario.email
+      }
+    });
+
+  } catch (erro) {
+    console.error('Erro no login:', erro);
+
+    return res.status(500).json({
+      error: 'Erro ao realizar login.'
+    });
+  }
+});
+
 const PORTA = process.env.PORT || 3000;
 
 app.listen(PORTA, () => {
