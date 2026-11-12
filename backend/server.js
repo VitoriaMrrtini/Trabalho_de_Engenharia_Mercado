@@ -3,10 +3,12 @@ const express = require('express');
 const cors = require('cors');
 const pool = require('./db');
 const bcrypt = require('bcrypt');
+const path = require('path');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, '../public')));
 
 app.get('/teste-conexao', async (req, res) => {
   try {
@@ -113,6 +115,149 @@ app.post('/cadastro', async (req, res) => {
       conexao.release();
     }
   }
+});
+
+app.post('/api/lista-produto', async (req, res) => {
+
+    const { id_cliente, produtos } = req.body;
+
+    if (
+        !Number.isInteger(id_cliente) ||
+        id_cliente <= 0 ||
+        !Array.isArray(produtos) ||
+        produtos.length === 0
+    ) {
+        return res.status(400).json({
+            mensagem: 'Dados inválidos.'
+        });
+    }
+
+    const ids = new Set();
+
+    for (const produto of produtos) {
+
+        if (
+            !Number.isInteger(produto.id_produto) ||
+            produto.id_produto <= 0 ||
+            !Number.isInteger(produto.quantidade) ||
+            produto.quantidade <= 0 ||
+            ids.has(produto.id_produto)
+        ) {
+            return res.status(400).json({
+                mensagem: 'Produto ou quantidade inválida.'
+            });
+        }
+
+        ids.add(produto.id_produto);
+    }
+
+    let db;
+
+    try {
+
+        db = await pool.getConnection();
+
+        await db.beginTransaction();
+
+        const [cliente] = await db.execute(
+            `SELECT id_cliente FROM CLIENTE WHERE id_cliente = ?`,
+            [id_cliente]
+        );
+
+        if (cliente.length === 0) {
+
+            await db.rollback();
+
+            return res.status(404).json({
+                mensagem: 'Cliente não encontrado.'
+            });
+        }
+
+        const sql = `
+            INSERT INTO LISTA_PRODUTO
+            (id_cliente, id_produto, quantidade)
+            VALUES (?, ?, ?)
+
+            ON DUPLICATE KEY UPDATE
+            quantidade = VALUES(quantidade)
+        `;
+
+        for (const produto of produtos) {
+
+            await db.execute(sql, [
+                id_cliente,
+                produto.id_produto,
+                produto.quantidade
+            ]);
+        }
+
+        await db.commit();
+
+        res.status(201).json({
+            mensagem: 'Lista de produtos salva com sucesso!'
+        });
+
+    } catch (erro) {
+
+        if (db) await db.rollback();
+
+        console.error(erro);
+
+        res.status(500).json({
+            mensagem: 'Erro ao salvar a lista de produtos.'
+        });
+
+    } finally {
+
+        if (db) db.release();
+
+    }
+
+});
+
+app.get('/api/lista-produto/:id_cliente', async (req, res) => {
+
+    const id_cliente = Number(req.params.id_cliente);
+
+    if (!Number.isInteger(id_cliente) || id_cliente <= 0) {
+
+        return res.status(400).json({
+            mensagem: 'ID do cliente inválido.'
+        });
+    }
+
+    try {
+
+        const [lista] = await pool.execute(`
+            SELECT
+                LP.id_cliente,
+                LP.id_produto,
+                P.nome,
+                P.preco,
+                LP.quantidade
+
+            FROM LISTA_PRODUTO LP
+
+            INNER JOIN PRODUTO P
+                ON LP.id_produto = P.id_produto
+
+            WHERE LP.id_cliente = ?
+
+            ORDER BY P.nome
+        `, [id_cliente]);
+
+        res.json(lista);
+
+    } catch (erro) {
+
+        console.error(erro);
+
+        res.status(500).json({
+            mensagem: 'Erro ao buscar lista.'
+        });
+
+    }
+
 });
 
 const PORTA = process.env.PORT || 3000;
