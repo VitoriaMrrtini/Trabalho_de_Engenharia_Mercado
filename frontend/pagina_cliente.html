@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/frontend/css/pagina_cliente.css" />
+  </head>
+  <body>
+    <header>
+      <div class="navbar">
+        <div class="header-inner-content">
+          <h1 class="logo">
+            <img
+              src="img/Logo Supermercado Lobato – Preço Baixo.png"
+              alt="logo Supermercado"
+            />
+          </h1>
+          <nav>
+            <ul>
+              <li>Higiene</li>
+              <li>Laticinios</li>
+              <li>Papelaria</li>
+              <li>Cereais</li>
+              <li>Congelados</li>
+              <li>Bebidas</li>
+            </ul>
+          </nav>
+          <div class="nav-icon-conteiner">
+            <a href="lista.html" aria-label="Abrir carrinho">
+              <img
+                src="img/cart-shopping-solid-full.svg"
+                alt="Carrinho de compras"
+              />
+              <span id="contadorCarrinho">0</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main class="perfil-container">
+      <section class="perfil-card">
+        <h2>Meu perfil</h2>
+        <p class="perfil-descricao">Consulte e atualize seus dados pessoais.</p>
+
+        <div id="mensagem" class="mensagem" role="alert"></div>
+
+        <form id="formPerfil">
+          <div class="campo">
+            <label for="nome">Nome completo</label>
+            <input type="text" id="nome" required disabled />
+          </div>
+
+          <div class="campo">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" required disabled />
+          </div>
+
+          <div class="campo" id="campoSenhaAtual" hidden>
+            <label for="senhaAtual">Senha atual</label>
+            <input
+              type="password"
+              id="senhaAtual"
+              autocomplete="current-password"
+            />
+          </div>
+
+          <div class="campo" id="campoNovaSenha" hidden>
+            <label for="novaSenha">Nova senha (opcional)</label>
+            <input
+              type="password"
+              id="novaSenha"
+              minlength="8"
+              autocomplete="new-password"
+              placeholder="Mínimo de 8 caracteres"
+            />
+            <small>Deixe em branco se não quiser alterar sua senha.</small>
+          </div>
+
+          <div class="botoes">
+            <button type="button" id="btnEditar">Editar perfil</button>
+            <button type="submit" id="btnSalvar" hidden>
+              Salvar alterações
+            </button>
+            <button type="button" id="btnCancelar" hidden>Cancelar</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="excluir-card">
+        <h3>Excluir minha conta</h3>
+        <p>Essa ação excluirá seu perfil e não poderá ser desfeita.</p>
+        <button type="button" id="btnExcluir" class="btn-excluir">
+          Excluir minha conta
+        </button>
+      </section>
+    </main>
+
+    <script src="js/pagina_cliente.js"></script>
+    <script src="js/pagina_cliente.js"></script>
+  </body>
+</html>
