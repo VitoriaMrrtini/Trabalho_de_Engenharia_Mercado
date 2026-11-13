@@ -46,14 +46,14 @@ function autenticarCliente(req, res, next) {
 
 app.get('/teste-conexao', async (req, res) => {
   try {
-    const [resultado] = await pool.query('SELECT DATABASE() AS banco');
+    const [resultado] = await pool.query("SELECT DATABASE() AS banco");
     res.json(resultado[0]);
   } catch (erro) {
     res.status(500).json({ error: erro.message });
   }
 });
 
-app.get('/produtos', async (req, res) => {
+app.get("/produtos", async (req, res) => {
   try {
     const [produtos] = await pool.query(`
       SELECT p.id_produto, p.nome, p.preco, p.estoque, p.data_validade,
@@ -68,31 +68,31 @@ app.get('/produtos', async (req, res) => {
 });
 
 // Cadastro de cliente
-app.post('/cadastro', async (req, res) => {
+app.post("/cadastro", async (req, res) => {
   const { nome, email, senha } = req.body;
 
   // Validar os dados recebidos
   if (!nome || !email || !senha) {
     return res.status(400).json({
-      error: 'Preencha todos os campos.'
+      error: "Preencha todos os campos.",
     });
   }
 
   if (nome.trim().length < 3) {
     return res.status(400).json({
-      error: 'O nome deve ter pelo menos 3 caracteres.'
+      error: "O nome deve ter pelo menos 3 caracteres.",
     });
   }
 
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
     return res.status(400).json({
-      error: 'Digite um e-mail válido.'
+      error: "Digite um e-mail válido.",
     });
   }
 
   if (senha.length < 8) {
     return res.status(400).json({
-      error: 'A senha deve ter pelo menos 8 caracteres.'
+      error: "A senha deve ter pelo menos 8 caracteres.",
     });
   }
 
@@ -108,42 +108,40 @@ app.post('/cadastro', async (req, res) => {
 
     // Cadastrar cliente
     const [resultado] = await conexao.execute(
-      'INSERT INTO CLIENTE (nome, email) VALUES (?, ?)',
-      [nome.trim(), email.trim()]
+      "INSERT INTO CLIENTE (nome, email) VALUES (?, ?)",
+      [nome.trim(), email.trim()],
     );
 
     const idCliente = resultado.insertId;
 
     // Cadastrar senha vinculada ao cliente
     await conexao.execute(
-      'INSERT INTO USUARIO (id_cliente, senha) VALUES (?, ?)',
-      [idCliente, senhaHash]
+      "INSERT INTO USUARIO (id_cliente, senha) VALUES (?, ?)",
+      [idCliente, senhaHash],
     );
 
     await conexao.commit();
 
     return res.status(201).json({
-      message: 'Cadastro realizado com sucesso!',
-      idCliente
+      message: "Cadastro realizado com sucesso!",
+      idCliente,
     });
-
   } catch (erro) {
     if (conexao) {
       await conexao.rollback();
     }
 
-    if (erro.code === 'ER_DUP_ENTRY') {
+    if (erro.code === "ER_DUP_ENTRY") {
       return res.status(409).json({
-        error: 'Este e-mail já está cadastrado.'
+        error: "Este e-mail já está cadastrado.",
       });
     }
 
-    console.error('Erro no cadastro:', erro);
+    console.error("Erro no cadastro:", erro);
 
     return res.status(500).json({
-      error: 'Erro ao realizar cadastro.'
+      error: "Erro ao realizar cadastro.",
     });
-
   } finally {
     if (conexao) {
       conexao.release();
@@ -499,6 +497,7 @@ app.put('/recuperar-senha', async (req, res) => {
 
 
 const PORTA = process.env.PORT || 3000;
+
 app.listen(PORTA, () => {
   console.log(`Servidor rodando em http://localhost:${PORTA}`);
 });
