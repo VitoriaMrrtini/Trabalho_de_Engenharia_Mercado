@@ -124,7 +124,6 @@ nav ul li::after {
 }
 
 
-
 .menu-button {
   display: none;
 }
@@ -174,6 +173,67 @@ nav ul li::after {
   font-size: 20px;
   font-weight: bold;
 }
+
+.controle-carrinho {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.botao-comprar {
+    background-color: #314da3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.botao-adicionar,
+.botao-remover {
+    width: 20px;
+    height: 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.botao-adicionar {
+    background-color: #193CA8;
+    color: white;
+}
+
+.botao-remover {
+    background-color: #F07830;
+    color: white;
+}
+
+.botao-adicionar:hover,
+.botao-comprar:hover {
+    background-color: #0A1C72;
+}
+
+.botao-remover:hover {
+    background-color: #D65C1E;
+}
+
+.botao-adicionar:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.quantidade {
+    font-size: 16px;
+    font-weight: bold;
+    min-width: 15px;
+    text-align: center;
+}
+
 
 .busca {
   display: grid;
