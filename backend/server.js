@@ -278,7 +278,7 @@ app.post("/api/lista-produto", autenticarCliente, async (req, res) => {
     db = await pool.getConnection();
     await db.beginTransaction();
 
-    const [cliente] = await db.execute(
+  const [cliente] = await db.execute(
       `SELECT ID_cliente FROM CLIENTE WHERE ID_cliente = ?`,
       [id_cliente]
     );
@@ -290,13 +290,23 @@ app.post("/api/lista-produto", autenticarCliente, async (req, res) => {
       });
     }
 
+    // Bloqueia nova lista caso o cliente já possua itens salvos no banco
+    const [listaExistente] = await db.execute(
+      `SELECT 1 FROM LISTA_PRODUTO WHERE ID_cliente = ? LIMIT 1`,
+      [id_cliente]
+    );
+
+    if (listaExistente.length > 0) {
+      await db.rollback();
+      return res.status(409).json({
+        mensagem: "Você já possui uma lista cadastrada. Exclua a lista atual antes de criar uma nova.",
+      });
+    }
+
     const sql = `
       INSERT INTO LISTA_PRODUTO
       (ID_cliente, ID_prod, quantidade)
-      VALUES (?, ?, ?)
-      ON DUPLICATE KEY UPDATE
-      quantidade = VALUES(quantidade)
-    `;
+      VALUES (?, ?, ?)`;
 
     for (let i = 0; i < ids_produtos.length; i++) {
       await db.execute(sql, [
@@ -319,6 +329,32 @@ app.post("/api/lista-produto", autenticarCliente, async (req, res) => {
     });
   } finally {
     if (db) db.release();
+  }
+});
+// Exclui a lista salva do cliente autenticado para permitir criar uma nova
+app.delete("/api/lista-produto", autenticarCliente, async (req, res) => {
+  const id_cliente = req.idClienteAutenticado;
+
+  try {
+    const [resultado] = await pool.execute(
+      `DELETE FROM LISTA_PRODUTO WHERE ID_cliente = ?`,
+      [id_cliente]
+    );
+
+    if (resultado.affectedRows === 0) {
+      return res.status(404).json({
+        mensagem: "Nenhuma lista encontrada para excluir.",
+      });
+    }
+
+    return res.status(200).json({
+      mensagem: "Lista excluída com sucesso! Agora você já pode criar uma nova lista.",
+    });
+  } catch (erro) {
+    console.error(erro);
+    return res.status(500).json({
+      mensagem: "Erro ao excluir a lista de produtos.",
+    });
   }
 });
 
