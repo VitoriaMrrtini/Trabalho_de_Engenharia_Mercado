@@ -1,9 +1,10 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const pool = require('./db');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+const pool = require("./db");
+const bcrypt = require("bcrypt");
+const path = require("path");
+const jwt = require("jsonwebtoken");
 
 const app = express();
 app.use(cors());
@@ -148,7 +149,21 @@ app.post("/cadastro", async (req, res) => {
     }
   }
 });
-
+// Anexa o token JWT na resposta do /login sem alterar a rota original
+app.use("/login", (req, res, next) => {
+  const jsonOriginal = res.json.bind(res);
+  res.json = (corpo) => {
+    if (res.statusCode === 200 && corpo && corpo.usuario && !corpo.token) {
+      corpo.token = jwt.sign(
+        { id: corpo.usuario.id },
+        process.env.JWT_SECRET || "chave_secreta_mercado",
+        { expiresIn: "2h" }
+      );
+    }
+    return jsonOriginal(corpo);
+  };
+  next();
+});
 // Login de cliente
 app.post('/login', async (req, res) => {
   const { email, senha } = req.body;
@@ -495,7 +510,210 @@ app.put('/recuperar-senha', async (req, res) => {
   }
 });
 
+// Extrai o ID do cliente a partir do token JWT gerado no login/cadastro
+function autenticarCliente(req, res, next) {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
 
+  if (token && token !== "null" && token !== "undefined") {
+    try {
+        const decoded = jwt.verify(
+        token,
+        process.env.JWT_SECRET || "chave_secreta_mercado"
+      );
+
+      const idToken = Number(
+        decoded &&
+          (decoded.id ??
+            decoded.id_cliente ??
+            decoded.ID_cliente ??
+            decoded.idCliente ??
+            decoded.sub ??
+            (decoded.usuario && decoded.usuario.id))
+      );
+
+      if (Number.isInteger(idToken) && idToken > 0) {
+        req.idClienteAutenticado = idToken;
+        return next();
+      }
+    } catch (erro) {
+      return res.status(403).json({
+        mensagem: "Token inválido ou expirado. Faça login novamente.",
+      });
+    }
+  }
+
+  // Fallback caso o frontend envie o id_cliente enquanto o token não estiver salvo no storage
+  const idBody = Number(req.body.id_cliente);
+  if (Number.isInteger(idBody) && idBody > 0) {
+    req.idClienteAutenticado = idBody;
+    return next();
+  }
+
+  return res.status(401).json({
+    mensagem: "Cliente não autenticado. Faça login para continuar.",
+  });
+}
+
+// Salva os arrays ids_produtos e quantidades na tabela LISTA_PRODUTO
+app.post("/api/lista-produto", autenticarCliente, async (req, res) => {
+  const id_cliente = req.idClienteAutenticado;
+  const { ids_produtos, quantidades } = req.body;
+
+  if (
+    !Array.isArray(ids_produtos) ||
+    !Array.isArray(quantidades) ||
+    ids_produtos.length === 0 ||
+    ids_produtos.length !== quantidades.length
+  ) {
+    return res.status(400).json({
+      mensagem: "Dados inválidos.",
+    });
+  }
+
+  const ids = new Set();
+
+  for (let i = 0; i < ids_produtos.length; i++) {
+    const idProd = Number(ids_produtos[i]);
+    const qtd = Number(quantidades[i]);
+
+    if (
+      !Number.isInteger(idProd) ||
+      idProd <= 0 ||
+      !Number.isInteger(qtd) ||
+      qtd <= 0 ||
+      ids.has(idProd)
+    ) {
+      return res.status(400).json({
+        mensagem: "Produto ou quantidade inválida.",
+      });
+    }
+
+    ids.add(idProd);
+  }
+
+  let db;
+
+  try {
+    db = await pool.getConnection();
+    await db.beginTransaction();
+
+  const [cliente] = await db.execute(
+      `SELECT ID_cliente FROM CLIENTE WHERE ID_cliente = ?`,
+      [id_cliente]
+    );
+
+    if (cliente.length === 0) {
+      await db.rollback();
+      return res.status(404).json({
+        mensagem: "Cliente não encontrado.",
+      });
+    }
+
+    // Bloqueia nova lista caso o cliente já possua itens salvos no banco
+    const [listaExistente] = await db.execute(
+      `SELECT 1 FROM LISTA_PRODUTO WHERE ID_cliente = ? LIMIT 1`,
+      [id_cliente]
+    );
+
+    if (listaExistente.length > 0) {
+      await db.rollback();
+      return res.status(409).json({
+        mensagem: "Você já possui uma lista cadastrada. Exclua a lista atual antes de criar uma nova.",
+      });
+    }
+
+    const sql = `
+      INSERT INTO LISTA_PRODUTO
+      (ID_cliente, ID_prod, quantidade)
+      VALUES (?, ?, ?)`;
+
+    for (let i = 0; i < ids_produtos.length; i++) {
+      await db.execute(sql, [
+        id_cliente,
+        Number(ids_produtos[i]),
+        Number(quantidades[i]),
+      ]);
+    }
+
+    await db.commit();
+
+    res.status(201).json({
+      mensagem: "Lista de produtos salva com sucesso!",
+    });
+  } catch (erro) {
+    if (db) await db.rollback();
+    console.error(erro);
+    res.status(500).json({
+      mensagem: "Erro ao salvar a lista de produtos.",
+    });
+  } finally {
+    if (db) db.release();
+  }
+});
+// Exclui a lista salva do cliente autenticado para permitir criar uma nova
+app.delete("/api/lista-produto", autenticarCliente, async (req, res) => {
+  const id_cliente = req.idClienteAutenticado;
+
+  try {
+    const [resultado] = await pool.execute(
+      `DELETE FROM LISTA_PRODUTO WHERE ID_cliente = ?`,
+      [id_cliente]
+    );
+
+    if (resultado.affectedRows === 0) {
+      return res.status(404).json({
+        mensagem: "Nenhuma lista encontrada para excluir.",
+      });
+    }
+
+    return res.status(200).json({
+      mensagem: "Lista excluída com sucesso! Agora você já pode criar uma nova lista.",
+    });
+  } catch (erro) {
+    console.error(erro);
+    return res.status(500).json({
+      mensagem: "Erro ao excluir a lista de produtos.",
+    });
+  }
+});
+
+// Consulta os itens salvos da lista de um cliente
+app.get("/api/lista-produto/:id_cliente", async (req, res) => {
+  const id_cliente = Number(req.params.id_cliente);
+
+  if (!Number.isInteger(id_cliente) || id_cliente <= 0) {
+    return res.status(400).json({
+      mensagem: "ID do cliente inválido.",
+    });
+  }
+
+  try {
+    const [lista] = await pool.execute(
+      `
+      SELECT
+        LP.ID_cliente,
+        LP.ID_prod,
+        P.nome,
+        P.preco,
+        LP.quantidade
+      FROM LISTA_PRODUTO LP
+      INNER JOIN PRODUTO P
+        ON LP.ID_prod = P.ID_produto
+      WHERE LP.ID_cliente = ?
+      ORDER BY P.nome
+      `,
+      [id_cliente]
+    );
+
+    res.json(lista);
+  } catch (erro) {
+    console.error(erro);
+    res.status(500).json({
+      mensagem: "Erro ao buscar lista.",
+    });
+  }
+});
 const PORTA = process.env.PORT || 3000;
 
 app.listen(PORTA, () => {

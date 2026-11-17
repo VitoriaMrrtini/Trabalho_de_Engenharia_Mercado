@@ -12,6 +12,33 @@
           <h1 class="logo">
                <img src="img/Logo Supermercado Lobato – Preço Baixo.png" alt="logo Supermercado"></h1>
         </div>
-    </header>
+</header>
+
+    <main style="max-width: 900px; margin: 30px auto; padding: 0 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h2>Minha Lista de Compras</h2>
+            <a href="pagina_produto.html">← Voltar aos produtos</a>
+    </div>
+
+        <p id="statusCliente" style="margin: 12px 0 20px; padding: 12px; background: #f8f9fa; border-radius: 6px;"></p>
+
+        <div id="alertaLista" style="margin-bottom: 16px; font-weight: bold;"></div>
+
+        <div id="containerItens"></div>
+
+        <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+            <strong id="totalLista" style="font-size: 1.2rem;">Total: R$ 0,00</strong>
+            <div style="display: flex; gap: 12px;">
+                <button type="button" id="btnDeletarLista" style="display: none; padding: 12px 24px; background-color: #dc3545; color: #fff; border: none; border-radius: 6px; font-size: 1rem; cursor: pointer;">
+                    Deletar Lista
+                </button>
+                <button type="button" id="btnConfirmar" style="padding: 12px 24px; background-color: #28a745; color: #fff; border: none; border-radius: 6px; font-size: 1rem; cursor: pointer;">
+                    Confirmar
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/lista.js"></script>
 </body>
 </html>
