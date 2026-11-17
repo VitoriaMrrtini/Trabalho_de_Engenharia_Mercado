@@ -1,12 +1,13 @@
 /* ===== Variáveis (troque a cor principal aqui) ===== */
 :root {
-  --cor-principal: #0d6efd;
-  --cor-principal-escura: #0b5ed7;
+  --cor-principal: #f07830;
+  --cor-principal-escura: #f09939;
   --cor-erro: #dc3545;
   --cor-sucesso: #198754;
   --cor-texto: #212529;
   --cor-texto-suave: #6c757d;
   --cor-borda: #ced4da;
+  --cor-azul: #0a1c72;
 }
 
 /* ===== Reset básico ===== */

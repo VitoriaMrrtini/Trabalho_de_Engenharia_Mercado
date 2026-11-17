@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recuperar senha</title>
+    <link rel="stylesheet" href="./css/recuperar-senha.css" />
+  </head>
+
+  <body>
+    <main class="pagina">
+      <section class="cartao">
+        <header class="topo">
+          <div class="icone">?</div>
+          <h1>Recuperar senha</h1>
+          <p>Informe seu e-mail e escolha uma nova senha.</p>
+        </header>
+
+        <div id="alerta" class="alerta oculto" role="alert"></div>
+
+        <form id="formRecuperacao">
+          <div class="campo">
+            <label for="email">E-mail cadastrado</label>
+            <input
+              type="email"
+              id="email"
+              placeholder="Digite seu e-mail"
+              autocomplete="email"
+              required
+            />
+            <small id="erro-email" class="erro"></small>
+          </div>
+          <div class="campo campo-senha">
+            <label for="novaSenha">Nova senha</label>
+
+            <div class="controle-senha">
+              <input
+                type="password"
+                id="novaSenha"
+                placeholder="Mínimo de 8 caracteres"
+                autocomplete="new-password"
+                required
+              />
+
+              <button
+                type="button"
+                class="btn-mostrar"
+                id="btnMostrarNovaSenha"
+              >
+                Mostrar
+              </button>
+            </div>
+
+            <small id="erro-nova-senha" class="erro"></small>
+          </div>
+
+          <div class="campo campo-senha">
+            <label for="confirmarSenha">Confirmar nova senha</label>
+
+            <div class="controle-senha">
+              <input
+                type="password"
+                id="confirmarSenha"
+                placeholder="Digite novamente sua senha"
+                autocomplete="new-password"
+                required
+              />
+
+              <button
+                type="button"
+                class="btn-mostrar"
+                id="btnMostrarConfirmacao"
+              >
+                Mostrar
+              </button>
+            </div>
+
+            <small id="erro-confirmar-senha" class="erro"></small>
+          </div>
+          
+          <button type="submit" class="btn-principal" id="btnAlterar">
+            Alterar senha
+          </button>
+        </form>
+
+        <footer class="rodape">
+          <a href="login.html">Voltar para o login</a>
+        </footer>
+      </section>
+    </main>
+
+    <script src="./js/recuperar-senha.js"></script>
+  </body>
+</html>
