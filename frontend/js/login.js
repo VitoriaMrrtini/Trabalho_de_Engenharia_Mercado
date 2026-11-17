@@ -126,11 +126,13 @@ form.addEventListener('submit', async (event) => {
       return;
     }
 
-    // Guardar informações básicas do usuário
+    // Guardar informações básicas do usuário e token de autenticação
     sessionStorage.setItem(
       'usuario',
       JSON.stringify(dados.usuario)
     );
+
+    sessionStorage.setItem('token', dados.token)
 
     mostrarAlerta('Login realizado com sucesso!', 'sucesso');
 
