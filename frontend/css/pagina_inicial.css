@@ -49,12 +49,6 @@ body {
     display: block;
 }
 
-@font-face {
-  font-family: "Bowlby One SC";
-  src: url("../fonts/Bowlby_One_SC/BowlbyOneSC-Regular.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-}
 
 nav ul {
   display: flex;

@@ -156,8 +156,14 @@ function criarCard(produto) {
   return card;
 }
 
-
-
+//função que normaliza os textos que estão escritos no html e no banco de dados
+function normalizarTexto(texto) {
+    return texto
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim();
+}
 function filtrarProdutos() {
     const pesquisa = campoBusca.value.toLowerCase().trim();
 
@@ -172,7 +178,7 @@ function filtrarProdutos() {
 
         const correspondeCategoria =
             categoriaSelecionada === "" ||
-            descricao === categoriaSelecionada.toLowerCase();
+            normalizarTexto(descricao) === normalizarTexto(categoriaSelecionada);
 
         card.style.display =
             correspondePesquisa && correspondeCategoria ? "" : "none";
