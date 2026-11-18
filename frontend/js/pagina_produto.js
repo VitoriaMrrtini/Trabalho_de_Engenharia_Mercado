@@ -3,6 +3,7 @@ const listaProdutos = document.getElementById("listaProdutos");
 const mensagem = document.getElementById("mensagemProdutos");
 const campoBusca = document.getElementById("campoTexto");
 const contador = document.getElementById("contadorCarrinho");
+let categoriaSelecionada = "";
 
 const CHAVE_CARRINHO = "mercadoLobatoCarrinho";
 const carrinho = JSON.parse(localStorage.getItem(CHAVE_CARRINHO)) || [];
@@ -155,21 +156,27 @@ function criarCard(produto) {
   return card;
 }
 
-// Filtra os produtos pela pesquisa
+
+
 function filtrarProdutos() {
-  const pesquisa = campoBusca.value.toLowerCase().trim();
+    const pesquisa = campoBusca.value.toLowerCase().trim();
 
-  listaProdutos.querySelectorAll(".card").forEach(card => {
-    const nome = card.querySelector("h3").textContent.toLowerCase();
+    listaProdutos.querySelectorAll(".card").forEach(card => {
+        const nome = card.querySelector("h3").textContent.toLowerCase();
 
-    const descricao = card.querySelector(".descricao")
-      .textContent.toLowerCase();
+        const descricao = card.querySelector(".descricao")
+            .textContent.toLowerCase();
 
-    const corresponde =
-      nome.includes(pesquisa) || descricao.includes(pesquisa);
+        const correspondePesquisa =
+            nome.includes(pesquisa) || descricao.includes(pesquisa);
 
-    card.style.display = corresponde ? "" : "none";
-  });
+        const correspondeCategoria =
+            categoriaSelecionada === "" ||
+            descricao === categoriaSelecionada.toLowerCase();
+
+        card.style.display =
+            correspondePesquisa && correspondeCategoria ? "" : "none";
+    });
 }
 
 // Carrega os produtos da API
@@ -200,6 +207,18 @@ async function carregarProdutos() {
       "Não foi possível carregar os produtos. Tente recarregar a página.";
   }
 }
+//filtra pela navegação
+const botoesCategoria = document.querySelectorAll(".categoria");
+
+botoesCategoria.forEach(botao => {
+    botao.addEventListener("click", () => {
+
+        categoriaSelecionada = botao.dataset.categoria;
+
+        filtrarProdutos();
+
+    });
+});
 
 // Eventos da pesquisa
 campoBusca.addEventListener("input", filtrarProdutos);
