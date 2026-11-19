@@ -21,6 +21,26 @@ const btnDeletarLista = document.getElementById('btnDeletarLista');
 const alertaListaEl = document.getElementById('alertaLista');
 const statusClienteEl = document.getElementById('statusCliente');
 
+let timeoutAlerta;
+function mostrarAlertaTela(mensagem, tipo = 'erro') {
+  alertaListaEl.textContent = mensagem;
+  alertaListaEl.className = '';
+
+  if (tipo === 'erro') {
+    alertaListaEl.classList.add('alerta-erro');
+  } else {
+    alertaListaEl.classList.add('alerta-sucesso');
+  }
+
+  alertaListaEl.style.display = 'block';
+
+  clearTimeout(timeoutAlerta);
+  timeoutAlerta = setTimeout(() => {
+    alertaListaEl.textContent = '';
+    alertaListaEl.style.display = 'none';
+  }, 4000);
+}
+
 let listaSalvaBanco = [];
 function normalizarTexto(texto) {
   return (texto || '')
@@ -180,8 +200,37 @@ function salvarCarrinhoLocal() {
 }
 
 function alterarQuantidade(index, delta) {
-  carrinho[index].quantidade += delta;
-  if (carrinho[index].quantidade <= 0) {
+  const item = carrinho[index];
+  const idBanco = encontrarIdProdutoNoBanco(item.nome);
+  
+  // Cria um mapa/objeto rápido de estoque baseado no array produtosBanco carregado do servidor
+  const estoqueProdutos = {};
+  produtosBanco.forEach(p => {
+    const id = Number(p.id_produto ?? p.ID_produto);
+    const estoque = Number(p.estoque ?? 0);
+    estoqueProdutos[id] = estoque;
+  });
+
+  const estoqueDisponivel = estoqueProdutos[idBanco];
+
+  if (estoqueDisponivel === undefined) {
+    alert('Produto não encontrado ou estoque indisponível.');
+    return;
+  }
+
+  // Calcula a quantidade desejada caso o delta seja positivo (adicionando)
+  if (delta > 0) {
+    const quantidadeAtualNaLista = item.quantidade;
+    const quantidadeTotalDesejada = quantidadeAtualNaLista + delta;
+
+    if (quantidadeTotalDesejada > estoqueDisponivel) {
+      alert(`Quantidade excede o estoque disponível. Máximo em estoque: ${estoqueDisponivel}`);
+      return;
+    }
+  }
+
+  item.quantidade += delta;
+  if (item.quantidade <= 0) {
     carrinho.splice(index, 1);
   }
   salvarCarrinhoLocal();
