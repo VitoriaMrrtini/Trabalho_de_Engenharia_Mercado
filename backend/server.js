@@ -11,36 +11,79 @@ app.use(cors());
 app.use(express.json());
 
 // Middleware para autenticar o cliente
+// function autenticarCliente(req, res, next) {
+//   const authorization = req.headers.authorization;
+
+//   if (!authorization) {
+//     return res.status(401).json({
+//       error: 'Acesso não autorizado.'
+//     });
+//   }
+
+//   const [tipo, token] = authorization.split(' ');
+
+//   if (tipo !== 'Bearer' || !token) {
+//     return res.status(401).json({
+//       error: 'Token inválido ou não informado.'
+//     });
+//   }
+
+//   try {
+//     const decoded = jwt.verify(
+//       token,
+//       process.env.JWT_SECRET
+//     );
+
+//     console.log('1. Token decodificado:', decoded);
+
+//     req.cliente = decoded;
+
+//     console.log('2. Cliente armazenado:', req.cliente);
+
+//     console.log('3. ID do cliente:', req.cliente.id);
+
+//     return next();
+
+//   } catch (erro) {
+//     console.error('Erro na autenticação:', erro);
+
+//     return res.status(401).json({
+//       error: 'Sessão inválida ou expirada.'
+//     });
+//   }
+// }
+
 function autenticarCliente(req, res, next) {
-  const authorization = req.headers.authorization;
-
-  if (!authorization) {
-    return res.status(401).json({
-      error: 'Acesso não autorizado.'
-    });
-  }
-
-  const token = authorization.split(' ')[1];
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.split(" ")[1];
 
   if (!token) {
     return res.status(401).json({
-      error: 'Token não informado.'
+      mensagem: "Cliente não autenticado. Faça login para continuar.",
     });
   }
 
   try {
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET
-    );
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    req.cliente = decoded;
+    const idToken = Number(decoded.id);
+
+    if (!Number.isInteger(idToken) || idToken <= 0) {
+      return res.status(401).json({
+        mensagem: "Token inválido.",
+      });
+    }
+
+    req.idClienteAutenticado = idToken;
+
+    console.log("Cliente autenticado:", req.idClienteAutenticado);
 
     next();
-
   } catch (erro) {
+    console.error("Erro ao validar token:", erro);
+
     return res.status(401).json({
-      error: 'Sessão inválida ou expirada.'
+      mensagem: "Token inválido ou expirado. Faça login novamente.",
     });
   }
 }
@@ -149,21 +192,23 @@ app.post("/cadastro", async (req, res) => {
     }
   }
 });
+
 // Anexa o token JWT na resposta do /login sem alterar a rota original
-app.use("/login", (req, res, next) => {
-  const jsonOriginal = res.json.bind(res);
-  res.json = (corpo) => {
-    if (res.statusCode === 200 && corpo && corpo.usuario && !corpo.token) {
-      corpo.token = jwt.sign(
-        { id: corpo.usuario.id },
-        process.env.JWT_SECRET || "chave_secreta_mercado",
-        { expiresIn: "2h" }
-      );
-    }
-    return jsonOriginal(corpo);
-  };
-  next();
-});
+// app.use("/login", (req, res, next) => {
+//   const jsonOriginal = res.json.bind(res);
+//   res.json = (corpo) => {
+//     if (res.statusCode === 200 && corpo && corpo.usuario && !corpo.token) {
+//       corpo.token = jwt.sign(
+//         { id: corpo.usuario.id },
+//         process.env.JWT_SECRET || "chave_secreta_mercado",
+//         { expiresIn: "2h" }
+//       );
+//     }
+//     return jsonOriginal(corpo);
+//   };
+//   next();
+// });
+
 // Login de cliente
 app.post('/login', async (req, res) => {
   const { email, senha } = req.body;
@@ -234,7 +279,7 @@ app.get('/cliente/perfil', autenticarCliente, async (req, res) => {
       `SELECT id_cliente, nome, email
        FROM CLIENTE
        WHERE id_cliente = ?`,
-      [req.cliente.id]
+      [req.idClienteAutenticado]
     );
 
     if (clientes.length === 0) {
@@ -304,7 +349,7 @@ app.put('/cliente/perfil', autenticarCliente, async (req, res) => {
       `SELECT senha
        FROM USUARIO
        WHERE id_cliente = ?`,
-      [req.cliente.id]
+      [req.idClienteAutenticado]
     );
 
     if (usuarios.length === 0) {
@@ -332,7 +377,7 @@ app.put('/cliente/perfil', autenticarCliente, async (req, res) => {
       `UPDATE CLIENTE
        SET nome = ?, email = ?
        WHERE id_cliente = ?`,
-      [nomeLimpo, emailLimpo, req.cliente.id]
+      [nomeLimpo, emailLimpo, req.idClienteAutenticado]
     );
 
     // Atualizar senha somente se uma nova foi informada
@@ -343,7 +388,7 @@ app.put('/cliente/perfil', autenticarCliente, async (req, res) => {
         `UPDATE USUARIO
          SET senha = ?
          WHERE id_cliente = ?`,
-        [senhaHash, req.cliente.id]
+        [senhaHash, req.idClienteAutenticado]
       );
     }
 
@@ -352,7 +397,7 @@ app.put('/cliente/perfil', autenticarCliente, async (req, res) => {
     return res.status(200).json({
       message: 'Perfil atualizado com sucesso!',
       usuario: {
-        id: req.cliente.id,
+        id: req.idClienteAutenticado,
         nome: nomeLimpo,
         email: emailLimpo
       }
@@ -397,7 +442,7 @@ app.delete('/cliente/perfil', autenticarCliente, async (req, res) => {
       `SELECT senha
        FROM USUARIO
        WHERE id_cliente = ?`,
-      [req.cliente.id]
+      [req.idClienteAutenticado]
     );
 
     if (usuarios.length === 0) {
@@ -419,7 +464,7 @@ app.delete('/cliente/perfil', autenticarCliente, async (req, res) => {
 
     await pool.execute(
       'DELETE FROM CLIENTE WHERE id_cliente = ?',
-      [req.cliente.id]
+      [req.idClienteAutenticado]
     );
 
     return res.status(200).json({
@@ -436,7 +481,7 @@ app.delete('/cliente/perfil', autenticarCliente, async (req, res) => {
 });
 
 
- // Recuperar senha do cliente
+// Recuperar senha do cliente
 app.put('/recuperar-senha', async (req, res) => {
   const { email, novaSenha } = req.body;
 
@@ -517,19 +562,19 @@ function autenticarCliente(req, res, next) {
 
   if (token && token !== "null" && token !== "undefined") {
     try {
-        const decoded = jwt.verify(
+      const decoded = jwt.verify(
         token,
         process.env.JWT_SECRET || "chave_secreta_mercado"
       );
 
       const idToken = Number(
         decoded &&
-          (decoded.id ??
-            decoded.id_cliente ??
-            decoded.ID_cliente ??
-            decoded.idCliente ??
-            decoded.sub ??
-            (decoded.usuario && decoded.usuario.id))
+        (decoded.id ??
+          decoded.id_cliente ??
+          decoded.ID_cliente ??
+          decoded.idCliente ??
+          decoded.sub ??
+          (decoded.usuario && decoded.usuario.id))
       );
 
       if (Number.isInteger(idToken) && idToken > 0) {
@@ -598,7 +643,7 @@ app.post("/api/lista-produto", autenticarCliente, async (req, res) => {
     db = await pool.getConnection();
     await db.beginTransaction();
 
-  const [cliente] = await db.execute(
+    const [cliente] = await db.execute(
       `SELECT ID_cliente FROM CLIENTE WHERE ID_cliente = ?`,
       [id_cliente]
     );
