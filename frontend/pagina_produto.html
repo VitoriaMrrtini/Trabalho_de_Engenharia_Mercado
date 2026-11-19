@@ -15,19 +15,30 @@
           <h1 class="logo">
                <img src="img/Logo Supermercado Lobato – Preço Baixo.png" alt="logo Supermercado"></h1>
           <nav>
-            <ul>
-              <li>Higiene</li>
-              <li>Laticinios</li>
-              <li>Papelaria</li>
-              <li>Cereais</li>
-              <li>Bebidas</li>
-            </ul>
-          </nav>
+              <ul>
+                  <li><button class="categoria" data-categoria="">Início</button></li>
+
+                  <li><button class="categoria" data-categoria="Higiene">Higiene</button></li>
+
+                  <li><button class="categoria" data-categoria="Laticínios">Laticínios</button></li>
+
+                  <li><button class="categoria" data-categoria="Papelaria">Papelaria</button></li>
+
+                  <li><button class="categoria" data-categoria="Cereais">Cereais</button></li>
+
+                  <li><button class="categoria" data-categoria="Bebidas">Bebidas</button></li>
+              </ul>
+        </nav>
          <div class="nav-icon-conteiner">
+
+          <a href="pagina_cliente.html">
+            <img src="img/perfil01.png" alt="Ìcone Perfil">
+          </a>
           <a href="lista.html" aria-label="Abrir carrinho">
-            <img src="img/cart-shopping-solid-full.svg" alt="Carrinho de compras"/>
+            <img src="img/5087784.png" alt="Carrinho de compras"/>
             <span id="contadorCarrinho">0</span>
           </a>
+
         </div>
         </div>
       </div>
@@ -44,12 +55,16 @@
     </form>
 
     <section class="nomeProd">
-       <h1 class="nomeProd">Produtos</h1>
+       <h1 class="nomeProd">Produtos</h1>       
     </section>
 
-    <p id="mensagemProdutos" role="status">Carregando produtos...</p>
-    <div class="produtos" id="listaProdutos"></div>
+    
 
+    <p id="mensagemProdutos" role="status">Carregando produtos...</p>
+    <div class="produtos" id="listaProdutos">
+        
+    </div>
+    
     <script src="js/pagina_produto.js"></script>
   </body>
 </html>

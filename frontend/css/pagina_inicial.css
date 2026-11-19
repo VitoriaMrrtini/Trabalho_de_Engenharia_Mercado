@@ -49,18 +49,14 @@ body {
     display: block;
 }
 
-@font-face {
-  font-family: "Bowlby One SC";
-  src: url("../fonts/Bowlby_One_SC/BowlbyOneSC-Regular.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-}
 
 nav ul {
   display: flex;
   list-style: none;
   align-items: center;
+  gap: 25px;
 }
+
 
 .nav-icon-conteiner {
   display: flex;
@@ -77,19 +73,43 @@ nav ul {
   margin-right: 1rem;
 }
 
-nav ul li {
-  color: #f3b776;
-  margin-right: 1.5rem;
+
+.nav-icon-conteiner img {
   cursor: pointer;
+  height: 30px;
+  
 }
 
-nav ul li:hover {
-  transform: translateY(-5px);
-  transition: all 0.2s;
-  font-weight: bolder;
+.nav-icon-conteiner img:first-child {
+  margin-right: 1rem;
+  filter: invert(18%) sepia(75%) saturate(2500%)
+          hue-rotate(215deg) brightness(55%);
+  width: 32px;
 }
 
+.nav-icon-conteiner a:nth-child(2) img {
+    filter: invert(18%) sepia(75%) saturate(2500%)
+          hue-rotate(215deg) brightness(55%);
+    width: 28px;
+}
+
+.categoria {
+    background: none;
+    border: none;
+    color: #153184;
+    font-size: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 8px 0;
+    transition: 0.3s;
+}
+
+.categoria:hover {
+    color: #FFFFFF;
+    border-bottom: 2px solid #193CA8;
+}
 .menu-button {
+
   display: none;
 }
 
@@ -138,6 +158,67 @@ nav ul li:hover {
   font-size: 20px;
   font-weight: bold;
 }
+
+.controle-carrinho {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.botao-comprar {
+    background-color: #314da3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.botao-adicionar,
+.botao-remover {
+    width: 20px;
+    height: 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.botao-adicionar {
+    background-color: #193CA8;
+    color: white;
+}
+
+.botao-remover {
+    background-color: #F07830;
+    color: white;
+}
+
+.botao-adicionar:hover,
+.botao-comprar:hover {
+    background-color: #0A1C72;
+}
+
+.botao-remover:hover {
+    background-color: #D65C1E;
+}
+
+.botao-adicionar:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.quantidade {
+    font-size: 16px;
+    font-weight: bold;
+    min-width: 15px;
+    text-align: center;
+}
+
 
 .busca {
   display: grid;

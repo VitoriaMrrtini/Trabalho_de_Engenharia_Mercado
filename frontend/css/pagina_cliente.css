@@ -93,6 +93,36 @@ nav ul li:hover {
   display: none;
 }
 
+.conteiner-voltar{ 
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 0 20px;
+}
+
+.area-voltar{
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+
+.btn-voltar{
+  background-color:#F07830;
+  color: white;
+  text-decoration: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: bold;
+  transition: backgroud-color 0.3s ease;
+}
+
+.btn-voltar:hover{
+  background-color: #D96120;
+  color: white;
+  text-decoration: none;
+} 
 .produtos {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
